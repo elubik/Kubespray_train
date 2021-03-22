@@ -1,0 +1,7 @@
+---
+
+- include: setup_virtualenv.yml
+  tags: virtualenv
+
+- include: setup_repo.yml
+  tags: deploy

@@ -1,0 +1,8 @@
+---
+
+- name: Copy env to home directory
+  command: cp -rf {{ pyenv_path }}/versions/{{ pyenv_python_versions[0] }} {{ virtualenv_path }}
+  register: create_virtualenv
+
+- name: Activate env when login
+  lineinfile: dest={{ bashrc_path }} line='source {{ virtualenv_path }}/bin/activate' insertafter='EOF' state=present

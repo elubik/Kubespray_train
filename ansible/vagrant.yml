@@ -1,0 +1,18 @@
+---
+
+- name: Create a {{ application_name }} deployment virtual machine via vagrant
+  hosts: all
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  vars:
+    - update_apt_cache: yes
+  vars_files:
+    - vars/base.yml
+    - vars/vagrant.yml
+    # - vars/ssh.yml
+  roles:
+    - base
+    - migibert.terraform
+    - avanov.pyenv
+    - kubespray_repo

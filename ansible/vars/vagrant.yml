@@ -1,0 +1,13 @@
+---
+
+# Environment setting
+
+vagrant_user_home: /home/vagrant
+virtualenv_path: "{{ vagrant_user_home }}/env"
+bashrc_path: "{{ vagrant_user_home }}/.bashrc"
+pyenv_path: "{{ vagrant_user_home }}/pyenv"
+pyenv_owner: "vagrant"
+pyenv_python_versions:
+  - 3.8.6
+projects_path: "{{ vagrant_user_home }}/deployments"
+kubespray_repo: "https://github.com/kubernetes-sigs/kubespray.git"

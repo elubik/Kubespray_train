@@ -1,0 +1,21 @@
+---
+
+pub_key: |
+  Paste here your public ssh key
+
+
+priv_key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    Paste here your private ssh key
+    -----END RSA PRIVATE KEY-----
+
+
+ssh_config: |
+  Host *
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+
+
+priv_key_file: "{{ vagrant_user_home }}/.ssh/id_rsa"
+pub_key_file: "{{ vagrant_user_home }}/.ssh/id_rsa.pub"
+ssh_config_file: "{{ vagrant_user_home }}/.ssh/config"

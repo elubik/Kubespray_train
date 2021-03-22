@@ -1,0 +1,3 @@
+.vagrant/*
+deployments/*
+task_*.txt

@@ -1,0 +1,30 @@
+---
+
+- name: Clone repos
+  git:
+    repo: "{{ kubespray_repo }}"
+    dest: "{{ projects_path }}/kubespray"
+    version: "master"
+    force: yes
+
+- name: Give env proper owner
+  become: yes
+  become_user: root
+  command: chown -R {{ pyenv_owner }} {{ virtualenv_path }}
+
+- name: Give env proper group
+  become: yes
+  become_user: root
+  command: chgrp -R {{ pyenv_owner }} {{ virtualenv_path }}
+
+- name: Install virtualenv via pip
+  pip:
+    name: virtualenv
+    executable: pip3
+
+- name: Install requirements
+  pip:
+    virtualenv={{ virtualenv_path }}
+    virtualenv_python=python
+    requirements="{{ projects_path }}/kubespray/requirements.txt"
+  become_user: "{{ pyenv_owner }}"
