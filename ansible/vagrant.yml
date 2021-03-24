@@ -16,3 +16,12 @@
     - migibert.terraform
     - avanov.pyenv
     - kubespray_repo
+  tasks:
+    - name: Copy generate_ssh script
+      become_user: vagrant
+      copy:
+        src: files/generate_ssh.sh
+        dest: "{{ vagrant_user_home }}/generate_ssh.sh"
+        mode: '0777'
+    - name: Install awscli
+      apt: name=awscli update_cache={{ update_apt_cache }} force=yes state=latest
