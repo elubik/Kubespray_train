@@ -15,7 +15,7 @@ echo -n AWS region:
 read -s AWS_DEFAULT_REGION
 echo
 
-echo update credentials.tfvars settings
+echo "update credentials.tfvars settings"
 sed -i "s/AWS_ACCESS_KEY_ID.*/AWS_ACCESS_KEY_ID = \"$AWS_ACCESS_KEY_ID\"/g" ~/deployments/kubespray/contrib/terraform/aws/credentials.tfvars
 sed -i --expression "s@AWS_SECRET_ACCESS_KEY.*@AWS_SECRET_ACCESS_KEY = \"$AWS_SECRET_ACCESS_KEY\"@g" ~/deployments/kubespray/contrib/terraform/aws/credentials.tfvars
 sed -i "s/AWS_SSH_KEY_NAME.*/AWS_SSH_KEY_NAME = \"deployment-key\"/g" ~/deployments/kubespray/contrib/terraform/aws/credentials.tfvars
@@ -34,10 +34,18 @@ aws_access_key_id=$AWS_ACCESS_KEY_ID
 aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
 EOT
 
-echo "ensure local time Zone is set to proper value - Europe/Warsaw"
-sudo timedatectl set-timezone 'Europe/Warsaw'
+echo "Do you want to deploy ssh key to AWS? true/yes to accept, any value to skip"
+read DEPLOY_KEY
 
-echo "deploy ssh to aws"
-aws ec2 create-key-pair --key-name deployment-key > ~/.ssh/id_rsa_aws
+if [[ $DEPLOY_KEY = 'true' ]] || [[ $DEPLOY_KEY = 'yes' ]]
+then
+  echo "ensure local time Zone is set to proper value - Europe/Warsaw"
+  sudo timedatectl set-timezone 'Europe/Warsaw'
+
+  echo "deploy ssh to aws"
+  aws ec2 create-key-pair --key-name deployment-key > ~/.ssh/id_rsa_aws
+else
+  echo "Key deploy skipped"
+fi
 
 echo "done"

@@ -23,5 +23,11 @@
         src: files/generate_ssh.sh
         dest: "{{ vagrant_user_home }}/generate_ssh.sh"
         mode: '0777'
+    - name: Copy aws_infrastructure_customize script
+      become_user: vagrant
+      copy:
+        src: files/aws_infrastructure_customize.sh
+        dest: "{{ vagrant_user_home }}/aws_infrastructure_customize.sh"
+        mode: '0777'
     - name: Install awscli
       apt: name=awscli update_cache={{ update_apt_cache }} force=yes state=latest
