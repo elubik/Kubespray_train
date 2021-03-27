@@ -42,8 +42,18 @@ then
   echo "ensure local time Zone is set to proper value - Europe/Warsaw"
   sudo timedatectl set-timezone 'Europe/Warsaw'
 
+  echo "generating new ssh key pair"
+  ssh-keygen -t rsa -N "" -C "deployment-key" -f ~/.ssh/id_rsa
+
   echo "deploy ssh to aws"
-  aws ec2 create-key-pair --key-name deployment-key > ~/.ssh/id_rsa_aws
+   aws ec2 import-key-pair --key-name "deployment-key" --public-key-material fileb://~/.ssh/id_rsa.pub
+
+  echo "set permission 600 to ssh key"
+  chmod 600 .ssh/id_rsa
+
+  echo "add key to ssh-agent"
+  ssh-add ~/.ssh/id_rsa
+  echo "ssh-add ~/.ssh/id_rsa" >> ~/.bashrc
 else
   echo "Key deploy skipped"
 fi

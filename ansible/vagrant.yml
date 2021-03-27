@@ -31,3 +31,5 @@
         mode: '0777'
     - name: Install awscli
       apt: name=awscli update_cache={{ update_apt_cache }} force=yes state=latest
+    - name: Activate ssh-agent when login
+      lineinfile: dest={{ bashrc_path }} line='eval $(ssh-agent)' insertafter='EOF' state=present

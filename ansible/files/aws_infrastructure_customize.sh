@@ -27,4 +27,8 @@ else
   echo "machines size update skipped"
 fi
 
-echo "done"
+echo "done
+
+Now you are ready to run ansible deployment. Please go to ~/deployments/kubespray and run the command:
+
+ansible-playbook -i ./inventory/hosts ./cluster.yml -e ansible_user=core -b --become-user=root --flush-cache"
