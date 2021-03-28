@@ -1,3 +1,4 @@
 .vagrant/*
-deployments/*
+deployments/kubespray/*
+deployments/kubespray
 task_*.txt
