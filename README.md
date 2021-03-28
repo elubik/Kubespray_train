@@ -35,22 +35,42 @@ All you need is to have:
     ```
 1. Now we are inside our deployment environment where we already have installed some tools like **awscli, terraformm, ansible, python3**. Now let run script to setup **AWS credentials** and deploy **ssh key** to our AWS. You'll need to provide: _AWS_ACCESS_KEY_ID_, _AWS_SECRET_ACCESS_KEY_, _AWS_DEFAULT_REGION_
     ```
+    cd ~/deployments/deploy_aws/
     ./generate_ssh.sh
     ```
-1. (optionally) Run another script to customize our cluster name and machines size. This can be manually done by editing _~/deployments/kubespray/contrib/terraform/aws/terraform.tfvars_. You'll need to provide: _AWS Cluster Name_ (anything fancy) and _AWS Mashines Size_ (t2.nano/t2.micro/t2.small/t2.medium/t2.large/t2.xlarge/t2.2xlarge)
+1. (optionally) Run another script to customize our cluster name and machines size. This can be manually done by editing _~/deployments/kubespray/contrib/terraform/aws/terraform.tfvars_. You'll need to provide: _AWS Cluster Name_ (anything fancy) and _AWS Mashines Size_ (like t2.* or t3.* at least medium)
+    ```
+    cd ~/deployments/deploy_aws/
+    ./aws_infrastructure_customize.sh
+    ```
 
-1. Finally switch to location for our deployment.
+1. Finally switch to location for our kubespray deployment.
     ```
     cd ~/deployments/kubespray/contrib/terraform/aws/
     ```
 1. Run terraform to deploy virtual machines. It can take few minutes.
     ```
     terraform init
-    terraform plan -out cluster_deployment_plan -var-file=credentials.tfvars
-    terraform apply “mysuperplan”
+    terraform plan -out aws_plan -var-file=credentials.tfvars
+    terraform apply "aws_plan"
     ```
-
-TBD: 
-* Deploy cluster
-* Configure access
-* run test deployments
+1. Once this is deployed we are ready to go with cluster deploy. This can take like 20 minutes.
+    ```
+    cd ~/deployments/kubespray
+    ansible-playbook -i inventory/hosts cluster.yml -e ansible_user=ubuntu -b --become-user=root --flush-cache
+    ```
+1. Finally after you obtain **~/.kube/config** from one of your _masters (control planes)_ to your machine and update **server** IP parameter part inside it with **apiserver_loadbalancer_domain_name** to have like below, you will be able to play with your kubernetes cluster with _kubectl_.
+    ```
+    server: https://kubernetes-elb-train-cluster-1316130565.us-east-1.elb.amazonaws.com:6443
+    ```
+    ```
+    (env) vagrant@vagrant:~$ kubectl get nodes
+    NAME                             STATUS   ROLES                  AGE    VERSION
+    ip-10-250-196-12.ec2.internal    Ready    control-plane,master   124m   v1.20.5
+    ip-10-250-198-2.ec2.internal     Ready    <none>                 122m   v1.20.5
+    ip-10-250-199-114.ec2.internal   Ready    control-plane,master   123m   v1.20.5
+    ip-10-250-200-132.ec2.internal   Ready    <none>                 122m   v1.20.5
+    ip-10-250-214-135.ec2.internal   Ready    <none>                 122m   v1.20.5
+    ip-10-250-215-111.ec2.internal   Ready    <none>                 122m   v1.20.5
+    ip-10-250-222-135.ec2.internal   Ready    control-plane,master   123m   v1.20.5
+    ```
